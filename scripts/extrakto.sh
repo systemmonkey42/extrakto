@@ -134,7 +134,7 @@ capture() {
                 --print-query \
                 --query="$query" \
                 --header="$header" \
-                --expect=${insert_key},${copy_key},ctrl-e,ctrl-f,ctrl-g,ctrl-o,ctrl-c,esc \
+                --expect=${insert_key},${copy_key},ctrl-a,ctrl-e,ctrl-f,ctrl-g,ctrl-o,ctrl-c,esc \
                 --tiebreak=index \
                 --layout="$fzf_layout" \
                 --no-info)"
@@ -164,6 +164,15 @@ capture() {
 
                 return 0
                 ;;
+
+            ctrl-a)
+				tput cup 99 0
+				if read -p "Selected input> " -eri "$text" text && [ -n "${text}" ]; then
+					tmux set-buffer -- "$text"
+					tmux paste-buffer -t $trigger_pane
+					return 0
+				fi
+				;;
 
             "${insert_key}")
                 tmux set-buffer -- "$text"
